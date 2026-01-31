@@ -39,10 +39,7 @@ export function TaskContextProvider({ children }: TaskContextProviderProps) {
   });
 
   useEffect(() => {
-    console.log(state);
-
     if (!state.activeTask) {
-      console.log('Worker terminado por falta de activeTask');
       worker.terminate();
     }
 
