@@ -15,6 +15,7 @@ import { Toast } from '../../adapters/Toast';
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
+  const lastTaskName = state.tasks[state.tasks.length - 1]?.name ?? '';
 
   const nextCycle = getNextCycle(state.currentCycle);
   const nextTaskType = getNextCycleType(nextCycle);
@@ -67,6 +68,7 @@ export function MainForm() {
           placeholder='Digite algo'
           ref={taskNameInput}
           disabled={!!state.activeTask}
+          defaultValue={lastTaskName}
         />
       </div>
 
