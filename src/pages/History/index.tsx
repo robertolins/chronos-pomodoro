@@ -11,6 +11,7 @@ import { getTaskStatus } from '../../utils/getTaskStatus';
 import { sortTasks, type SortTasksOptions } from '../../utils/sortTasks';
 import { useEffect, useState } from 'react';
 import { TaskActionTypes } from '../../contexts/TaskContext/taskActions';
+import { Toast } from '../../adapters/Toast';
 
 const taskTypeDictionary = {
   workTime: 'Foco',
@@ -20,6 +21,7 @@ const taskTypeDictionary = {
 
 export function History() {
   const { state, dispatch } = useTaskContext();
+  const [confirmClearHistory, setConfirmClearHistory] = useState(false);
   const hasTasks = state.tasks.length > 0;
 
   const [sortTasksOptions, setSortTaskOptions] = useState<SortTasksOptions>(
@@ -44,6 +46,21 @@ export function History() {
     }));
   }, [state.tasks]);
 
+  useEffect(() => {
+    if (!confirmClearHistory) return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setConfirmClearHistory(false);
+
+    dispatch({ type: TaskActionTypes.RESET_STATE });
+  }, [confirmClearHistory, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      Toast.dismiss();
+    };
+  }, []);
+
   function handleSortTasks({ field }: Pick<SortTasksOptions, 'field'>) {
     const newDirection = sortTasksOptions.direction === 'desc' ? 'asc' : 'desc';
 
@@ -59,9 +76,10 @@ export function History() {
   }
 
   function handleResetHistory() {
-    if (!confirm('Tem certeza')) return;
-
-    dispatch({ type: TaskActionTypes.RESET_STATE });
+    Toast.dismiss();
+    Toast.confirm('Tem certeza?', confirmation => {
+      setConfirmClearHistory(confirmation);
+    });
   }
 
   return (
