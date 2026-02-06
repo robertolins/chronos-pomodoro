@@ -56,6 +56,8 @@ export function History() {
   }, [confirmClearHistory, dispatch]);
 
   useEffect(() => {
+    document.title = 'Histórico - Chronos Pomodoro';
+
     return () => {
       Toast.dismiss();
     };
